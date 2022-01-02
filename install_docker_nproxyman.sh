@@ -10,7 +10,7 @@ installApps()
     echo ""
     echo ""
     
-    ISACT=$( (sudo systemctl is-active docker ) 2>&1 )
+    ISACT=$( (systemctl is-active docker ) 2>&1 )
     ISCOMP=$( (docker-compose -v ) 2>&1 )
 
     #### Try to check whether docker is installed and running - don't prompt if it is
@@ -69,7 +69,7 @@ startInstall()
 
     if [[ "$OS" != "1" ]]; then
         echo "    1. Installing System Updates... this may take a while...be patient."
-        (sudo apt update && sudo apt upgrade -y) > ~/docker-script-install.log 2>&1 &
+        ( apt update &&  apt upgrade -y) > ~/docker-script-install.log 2>&1 &
         ## Show a spinner for activity progress
         pid=$! # Process Id of the previous running command
         spin='-\|/'
@@ -84,7 +84,7 @@ startInstall()
         echo "    2. Install Prerequisite Packages..."
         sleep 2s
 
-        sudo apt install apt-transport-https ca-certificates curl software-properties-common -y >> ~/docker-script-install.log 2>&1
+         apt install apt-transport-https ca-certificates curl software-properties-common -y >> ~/docker-script-install.log 2>&1
 
         if [[ "$DOCK" == [yY] ]]; then
             echo "    3. Retrieving Signing Keys for Docker... and adding the Docker-CE repository..."
@@ -92,23 +92,23 @@ startInstall()
 
             #### add the Debian 10 Buster key
             if [[ "$OS" == 2 ]]; then
-                curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add - >> ~/docker-script-install.log 2>&1
-                sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" -y >> ~/docker-script-install.log 2>&1
+                curl -fsSL https://download.docker.com/linux/debian/gpg |  apt-key add - >> ~/docker-script-install.log 2>&1
+                 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" -y >> ~/docker-script-install.log 2>&1
             fi
 
             if [[ "$OS" == 3 ]] || [[ "$OS" == 4 ]]; then
-                curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - >> ~/docker-script-install.log 2>&1
+                curl -fsSL https://download.docker.com/linux/ubuntu/gpg |  apt-key add - >> ~/docker-script-install.log 2>&1
 
-                sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" -y >> ~/docker-script-install.log 2>&1
+                 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" -y >> ~/docker-script-install.log 2>&1
             fi
 
-            sudo apt update >> ~/docker-script-install.log 2>&1
-            sudo apt-cache policy docker-ce >> ~/docker-script-install.log 2>&1
+             apt update >> ~/docker-script-install.log 2>&1
+             apt-cache policy docker-ce >> ~/docker-script-install.log 2>&1
 
             echo "    4. Installing Docker-CE (Community Edition)..."
             sleep 2s
 
-            sudo apt install docker-ce -y >> ~/docker-script-install.log 2>&1
+             apt install docker-ce -y >> ~/docker-script-install.log 2>&1
 
                 echo "- docker-ce version is now:"
             docker -v
@@ -116,7 +116,7 @@ startInstall()
 
             if [[ "$OS" == 2 ]]; then
                 echo "    5. Starting Docker Service"
-                sudo systemctl docker start >> ~/docker-script-install.log 2>&1
+                 systemctl docker start >> ~/docker-script-install.log 2>&1
             fi
         fi
     fi
@@ -128,7 +128,7 @@ startInstall()
     if [[ "$OS" == "1" ]]; then
         if [[ "$DOCK" == [yY] ]]; then
             echo "    1. Updating System Packages..."
-            sudo yum check-update >> ~/docker-script-install.log 2>&1
+             yum check-update >> ~/docker-script-install.log 2>&1
 
             echo "    2. Installing Docker-CE (Community Edition)..."
 
@@ -140,22 +140,22 @@ startInstall()
             sleep 2s
 
 
-            sudo systemctl start docker >> ~/docker-script-install.log 2>&1
+             systemctl start docker >> ~/docker-script-install.log 2>&1
 
             echo "    4. Enabling the Docker Service..."
             sleep 2s
 
-            sudo systemctl enable docker >> ~/docker-script-install.log 2>&1
+             systemctl enable docker >> ~/docker-script-install.log 2>&1
         fi
     fi
 
     if [[ "$DOCK" == [yY] ]]; then
-        # add current user to docker group so sudo isn't needed
+        # add current user to docker group so  isn't needed
         echo ""
         echo "  - Attempting to add the currently logged in user to the docker group..."
 
         sleep 2s
-        sudo usermod -aG docker "${USER}" >> ~/docker-script-install.log 2>&1
+         usermod -aG docker "${USER}" >> ~/docker-script-install.log 2>&1
         echo "  - You'll need to log out and back in to finalize the addition of your user to the docker group."
         echo ""
         echo ""
@@ -179,7 +179,7 @@ startInstall()
         ######################################        
         
         if [[ "$OS" != "1" ]]; then
-            sudo apt install docker-compose -y >> ~/docker-script-install.log 2>&1
+             apt install docker-compose -y >> ~/docker-script-install.log 2>&1
         fi
 
         ######################################
@@ -187,9 +187,9 @@ startInstall()
         ######################################
 
         if [[ "$OS" == "1" ]]; then
-            sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose >> ~/docker-script-install.log 2>&1
+             curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose >> ~/docker-script-install.log 2>&1
 
-            sudo chmod +x /usr/local/bin/docker-compose >> ~/docker-script-install.log 2>&1
+             chmod +x /usr/local/bin/docker-compose >> ~/docker-script-install.log 2>&1
         fi
 
         echo ""
@@ -204,11 +204,11 @@ startInstall()
     ##########################################
     #### Test if Docker Service is Running ###
     ##########################################
-    ISACT=$( (sudo systemctl is-active docker ) 2>&1 )
+    ISACT=$( ( systemctl is-active docker ) 2>&1 )
     if [[ "$ISACt" != "active" ]]; then
         echo "Giving the Docker service time to start..."
         while [[ "$ISACT" != "active" ]] && [[ $X -le 10 ]]; do
-            sudo systemctl start docker >> ~/docker-script-install.log 2>&1
+             systemctl start docker >> ~/docker-script-install.log 2>&1
             sleep 10s &
             pid=$! # Process Id of the previous running command
             spin='-\|/'
@@ -220,7 +220,7 @@ startInstall()
                 sleep .1
             done
             printf "\r"
-            ISACT=`sudo systemctl is-active docker`
+            ISACT=` systemctl is-active docker`
             let X=X+1
             echo "$X"
         done
@@ -248,7 +248,7 @@ startInstall()
         fi
 
         if [[ "$OS" != "1" ]]; then
-          sudo docker-compose up -d
+           docker-compose up -d
         fi
 
         echo ""
@@ -274,8 +274,8 @@ startInstall()
         echo ""
         echo ""
 
-        sudo docker volume create portainer_data
-        sudo docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+         docker volume create portainer_data
+         docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
         echo ""
         echo ""
         echo "    Navigate to your server hostname / IP address on port 9000 and create your admin account for Portainer-CE"
@@ -293,8 +293,8 @@ startInstall()
         echo ""
         echo "    1. Preparing to install Portainer Agent"
 
-        sudo docker volume create portainer_data
-        sudo docker run -d -p 9001:9001 --name portainer_agent --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent
+         docker volume create portainer_data
+         docker run -d -p 9001:9001 --name portainer_agent --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent
         echo ""
         echo ""
         echo "    From Portainer or Portainer-CE add this Agent instance via the 'Endpoints' option in the left menu."
